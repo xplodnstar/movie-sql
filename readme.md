@@ -1,4 +1,4 @@
-# Movie SQL Search
+# Movie SQL
 
 ## Description
 
