@@ -181,21 +181,52 @@ UPDATE 5 different movies to their correct rating
 
 ## Hard Mode
 * Use concat and research about internet movie database to produce a valid url from the imdbid
+    ALTER TABLE links
+    ADD imdb_link VARCHAR(255) AFTER imdb_id;
+    UPDATE links SET imdb_link = CONCAT('https://www.imdb.com/title/tt',imdb_id)
 
 
 * Use concat and research about the movie database to produce a valid url from tmdbid
+    ALTER TABLE links
+    ADD tmdb_link VARCHAR(255) AFTER tmdb_id;
+    UPDATE links SET tmdb_link = CONCAT('https://www.themoviedb.org/movie/',tmdb_id)
 
 
 * Get the ratings for The Unusuals and convert the timestamp into a human readable date time
+    SELECT movie_id, rating, FROM_UNIXTIME(timestamp) 
+    FROM ratings 
+    WHERE movie_id=50
+            Had to use The Usual Suspects, The Unsusals is not in this database.
 
 
 * Using SQL normalize the tags in the tags table.  Make them lowercased and replace the spaces with `-`
+    UPDATE tags 
+    SET tag = LCASE(REPLACE(`tag`,' ','_'))
 
 
 * Create a new field on the movies table for the year.  Using an update query and a substring method update that column for every movie with the year found in the title column.
+    ALTER TABLE movies
+    ADD year VARCHAR(4) AFTER genres;
+    UPDATE movies 
+    SET year = SUBSTRING(`title`,-5,4)
 
 
 * Once you have completed the new year column go through the title column and strip out the year.
+    UPDATE movies 
+    SET title = REPLACE(`title`,SUBSTRING(`title`,-6,6),'')
 
 
 * Create a new column in the movies table and store the average review for each and every movie. 
+    ALTER TABLE movies
+    ADD review VARCHAR(20) AFTER rating;
+
+                                            UPDATE  movies movies       
+                                                INNER JOIN
+                                                    (
+                                                        SELECT  AVG(rating) as review 
+                                                        FROM    ratings 
+                                                        GROUP BY movie_id
+                                                    ) ratings  ON `movies.id` = `ratings.movie_id`
+                                            SET     movies.review = ratings.review
+
+
