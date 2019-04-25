@@ -219,14 +219,13 @@ UPDATE 5 different movies to their correct rating
 * Create a new column in the movies table and store the average review for each and every movie. 
     ALTER TABLE movies
     ADD review VARCHAR(20) AFTER rating;
-
-                                            UPDATE  movies movies       
-                                                INNER JOIN
-                                                    (
-                                                        SELECT  AVG(rating) as review 
-                                                        FROM    ratings 
-                                                        GROUP BY movie_id
-                                                    ) ratings  ON `movies.id` = `ratings.movie_id`
-                                            SET     movies.review = ratings.review
+    UPDATE  movies movies       
+        INNER JOIN
+            (
+                SELECT  ROUND(AVG(rating),2) as review, movie_id
+                FROM    ratings 
+                GROUP BY movie_id
+            ) ratings  ON movie_id = id
+    SET     movies.review = ratings.review
 
 
